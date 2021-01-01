@@ -12,9 +12,17 @@ namespace ConsoleApp3
         {
             Chiller chiller = new Chiller();
 
-            while (true)
-            {
+            UInt32 i = 0;
 
+            while (i<1000000)
+            {
+                i++;
+
+                if (i == 10) System.Threading.Thread.Sleep(5000);
+
+                if (i == 10) chiller.TurnOff();
+
+                if (i == 100000) System.Threading.Thread.Sleep(5000);
             }
         }
     }

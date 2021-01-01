@@ -55,9 +55,14 @@ namespace ConsoleApp3
         {
             motorControl = new MotorControl(motorNumber);
             motorControl.TurnOnMotor();
-            motorControl.TurnOffMotor();
+            
         }
 
         #endregion
+
+        public void TurnOff() 
+        {
+            motorControl.TurnOffMotor();
+        }
     }
 }

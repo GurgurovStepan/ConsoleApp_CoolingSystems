@@ -12,29 +12,27 @@ namespace ConsoleApp3
     class Motor
     {
         #region События
-
-        public delegate void EvHand();
-
+  
         /// <summary>
         /// Включился
         /// </summary>
-        public event EvHand SwitchedOn = delegate { };
-        public void OnSwitchedOn()
+        public event EventHandler SwitchedOn = delegate { };
+        public void OnSwitchedOn(object sender, EventArgs e)
         {
-            EvHand switchedOn = SwitchedOn;
+            EventHandler switchedOn = SwitchedOn;
             if (switchedOn != null)
-                switchedOn();
+                switchedOn(this, e);
         }
 
         /// <summary>
         /// Отключился
         /// </summary>
-        public event EvHand SwitchedOff = delegate { };
-        public void OnSwitchedOff()
+        public event EventHandler SwitchedOff = delegate { };
+        public void OnSwitchedOff(object sender, EventArgs e)
         {
-            EvHand switchedOff = SwitchedOff;
+            EventHandler switchedOff = SwitchedOff;
             if (switchedOff != null)
-                switchedOff();
+                switchedOff(this, e);
         }
 
         #endregion
@@ -44,11 +42,12 @@ namespace ConsoleApp3
         /// <summary>
         /// Конструктор
         /// </summary>
-        public Motor() 
+        public Motor(sbyte numb) 
         {
             WorkTime = 0;
             On = false;
             Off = true;
+            Number = numb;
         }
 
         #endregion
@@ -70,6 +69,11 @@ namespace ConsoleApp3
         /// </summary>
         private bool off;
 
+        /// <summary>
+        /// Номер
+        /// </summary>
+        private sbyte number;
+
         #endregion
 
         #region Свойства
@@ -88,6 +92,11 @@ namespace ConsoleApp3
         /// Нарабока
         /// </summary>
         public uint WorkTime { get => workTime; private set => workTime = value; }
+        
+        /// <summary>
+        /// Номер
+        /// </summary>
+        public sbyte Number { get => number; private set => number = value; }
 
         #endregion
 
@@ -102,7 +111,7 @@ namespace ConsoleApp3
         {
             On = true;
             Off = false;
-            OnSwitchedOn();
+            OnSwitchedOn(this, new EventArgs());
         }
 
         /// <summary>
@@ -112,16 +121,20 @@ namespace ConsoleApp3
         {
             On = false;
             Off = true;
-            OnSwitchedOff();
+            OnSwitchedOff(this, new EventArgs());
         }
 
         #endregion
 
-        #region Изменить наработку
+        #region Изменить значение наработки
 
-        public void SetWorkTime() 
+        /// <summary>
+        /// Подсчитать наработку
+        /// </summary>
+        /// <param name="time">время работы мотора</param>
+        public void SetWorkTime(TimeSpan time) 
         {
-            WorkTime++;
+            WorkTime =+ (uint)time.TotalSeconds;
         }
 
         #endregion

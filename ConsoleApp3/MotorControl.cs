@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace ConsoleApp3
 {
@@ -11,22 +12,27 @@ namespace ConsoleApp3
     /// </summary>
     class MotorControl
     {
+
         #region Обработчики событий
 
         /// <summary>
         /// Мотор включился
         /// </summary>
-        private void MotorControl_SwitchedOn()
+        private void MotorControl_SwitchedOn(object sender, EventArgs e)
         {
-            Console.WriteLine("Мотро включился");
+            Motor mot = (Motor)sender;
+            startTime = DateTime.UtcNow;
+            Console.WriteLine("Мотор {0} включился, время включения {1}. Наработка равна - {2}", mot.Number, startTime, mot.WorkTime);
         }
 
         /// <summary>
         /// Мотор отключился
         /// </summary>
-        private void MotorControl_SwitchedOff()
+        private void MotorControl_SwitchedOff(object sender, EventArgs e)
         {
-            Console.WriteLine("Мотро включился");
+            Motor mot = (Motor)sender;
+            mot.SetWorkTime(DateTime.UtcNow - startTime);
+            Console.WriteLine("Мотор {0} отключился, время отключения {1}. Наработка равна - {2}", mot.Number, DateTime.UtcNow, mot.WorkTime);
         }
 
         #endregion
@@ -37,6 +43,11 @@ namespace ConsoleApp3
         /// Моторы
         /// </summary>
         private Motor[] motor;
+
+        /// <summary>
+        /// время включения мотора 
+        /// </summary>
+        private DateTime startTime;  Необходимо для каждого мотора отдельно!!!
 
         #endregion
 
@@ -51,10 +62,11 @@ namespace ConsoleApp3
             motor = new Motor[numb];
             for (int i = 0; i < motor.Length; i++)
             {
-                motor[i] = new Motor();
+                motor[i] = new Motor((sbyte)i);
                 motor[i].SwitchedOn += MotorControl_SwitchedOn;
                 motor[i].SwitchedOff += MotorControl_SwitchedOff;
             }
+
         }
 
         #endregion
