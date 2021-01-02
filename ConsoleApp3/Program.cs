@@ -10,7 +10,7 @@ namespace ConsoleApp3
     {
         static void Main(string[] args)
         {
-            Chiller chiller = new Chiller();
+            MainControl control = new MainControl();
 
             UInt32 i = 0;
 
@@ -18,9 +18,27 @@ namespace ConsoleApp3
             {
                 i++;
 
-                if (i == 10) System.Threading.Thread.Sleep(5000);
+                if (i == 10) 
+                {
+                    control.SetCurrentTemp(75);
+                    System.Threading.Thread.Sleep(2000);
 
-                if (i == 10) chiller.TurnOff();
+                    control.SetCurrentTemp(85);
+                    System.Threading.Thread.Sleep(2000);
+
+                    control.SetCurrentTemp(95);
+                    System.Threading.Thread.Sleep(2000);
+
+                    control.SetCurrentTemp(85);
+                    System.Threading.Thread.Sleep(2000);
+
+                    control.SetCurrentTemp(75);
+                    System.Threading.Thread.Sleep(2000);
+
+                    control.SetCurrentTemp(65);
+                    System.Threading.Thread.Sleep(2000);
+                }
+
 
                 if (i == 100000) System.Threading.Thread.Sleep(5000);
             }

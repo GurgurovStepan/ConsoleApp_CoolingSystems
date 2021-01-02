@@ -21,8 +21,7 @@ namespace ConsoleApp3
         private void MotorControl_SwitchedOn(object sender, EventArgs e)
         {
             Motor mot = (Motor)sender;
-            startTime = DateTime.UtcNow;
-            Console.WriteLine("Мотор {0} включился, время включения {1}. Наработка равна - {2}", mot.Number, startTime, mot.WorkTime);
+            Console.WriteLine("Мотор {0} включился, время включения {1}. Наработка равна - {2}", mot.Number, mot.StartTime, mot.WorkTime);
         }
 
         /// <summary>
@@ -31,8 +30,8 @@ namespace ConsoleApp3
         private void MotorControl_SwitchedOff(object sender, EventArgs e)
         {
             Motor mot = (Motor)sender;
-            mot.SetWorkTime(DateTime.UtcNow - startTime);
-            Console.WriteLine("Мотор {0} отключился, время отключения {1}. Наработка равна - {2}", mot.Number, DateTime.UtcNow, mot.WorkTime);
+            mot.SetWorkTime(mot.StopTime - mot.StartTime); // подсчитать наработку за период вкл./откл.
+            Console.WriteLine("Мотор {0} отключился, время отключения {1}. Наработка равна - {2}", mot.Number, mot.StopTime, mot.WorkTime);
         }
 
         #endregion
@@ -44,25 +43,22 @@ namespace ConsoleApp3
         /// </summary>
         private Motor[] motor;
 
-        /// <summary>
-        /// время включения мотора 
-        /// </summary>
-        private DateTime startTime;  Необходимо для каждого мотора отдельно!!!
-
         #endregion
 
         #region Конструкторы
+
+        public MotorControl() { }
 
         /// <summary>
         /// Создать моторы
         /// </summary>
         /// <param name="numb">число моторов</param>
-        public MotorControl(byte numb)
+        public MotorControl(sbyte numb)
         {
             motor = new Motor[numb];
-            for (int i = 0; i < motor.Length; i++)
+            for (sbyte i = 0; i < motor.Length; i++)
             {
-                motor[i] = new Motor((sbyte)i);
+                motor[i] = new Motor(i);
                 motor[i].SwitchedOn += MotorControl_SwitchedOn;
                 motor[i].SwitchedOff += MotorControl_SwitchedOff;
             }
@@ -80,8 +76,22 @@ namespace ConsoleApp3
         /// </summary>
         public void TurnOnMotor()
         {
-            Motor temp = GetMotorWithMinWorkTime();
-            temp.TurnOn();
+            var off = false; // наличие хотя бы одного отключенного мотора
+
+            for (int i = 0; i < motor.Length; i++)
+            {
+                if (motor[i].Off)
+                {
+                    off = true;
+                    break;
+                }
+            }
+
+            if (off)
+            {
+                Motor temp = GetMotorWithMinWorkTime();
+                temp.TurnOn();
+            }
         }
 
         /// <summary>
@@ -89,13 +99,27 @@ namespace ConsoleApp3
         /// </summary>
         public void TurnOffMotor()
         {
-            Motor temp = GetMotorWithMaxWorkTime();
-            temp.TurnOff();
+            var on = false; // наличие хотя бы одного включенного мотора
+
+            for (int i = 0; i < motor.Length; i++)
+            {
+                if (motor[i].On)
+                {
+                    on = true;
+                    break;
+                }
+            }
+
+            if (on)
+            {
+                Motor temp = GetMotorWithMaxWorkTime();
+                temp.TurnOff();
+            }
         }
 
         #endregion
 
-        #region Определить наработку мотора
+        #region Определить мотор с максимальной и минимальной наработкой
 
         /// <summary>
         /// Определить мотор (отключенный) с минимальной наработкой 
@@ -104,13 +128,19 @@ namespace ConsoleApp3
         private Motor GetMotorWithMinWorkTime()
         {
             int temp = 0;
+
             for (int i = 0; i < motor.Length - 1; i++)
             {
-                if (motor[i].WorkTime < motor[i + 1].WorkTime)
+                if (motor[i].On)
                 {
-                    if (motor[i].Off) temp = i;
+                    temp++;
+                }
+                else if (motor[i].WorkTime < motor[i + 1].WorkTime)
+                {
+                    temp = i;
                 }
             }
+
             return motor[temp];
         }
 
@@ -120,15 +150,26 @@ namespace ConsoleApp3
         /// <returns></returns>
         private Motor GetMotorWithMaxWorkTime()
         {
-            int temp = 0;
-            for (int i = 0; i < motor.Length - 1; i++)
+            int index = 0;
+            uint max = uint.MinValue;
+
+            for (int i = 0; i < motor.Length; i++)
             {
-                if (motor[i].WorkTime > motor[i + 1].WorkTime)
+                if (motor[i].On)
                 {
-                    if (motor[i].On) temp = i;
+                    if (motor[i].WorkTime > max)
+                    {
+                        max = motor[i].WorkTime;
+                        index = i;
+                    }
+                }
+                else
+                {
+                    if (i < motor.Length - 1) index++;
                 }
             }
-            return motor[temp];
+
+            return motor[index];
         }
 
         #endregion

@@ -98,6 +98,16 @@ namespace ConsoleApp3
         /// </summary>
         public sbyte Number { get => number; private set => number = value; }
 
+        /// <summary>
+        /// Время включения
+        /// </summary>
+        public DateTime StartTime { get; private set; }
+
+        /// <summary>
+        /// Время отключения
+        /// </summary>
+        public DateTime StopTime { get; private set; }
+
         #endregion
 
         #region Методы
@@ -111,6 +121,7 @@ namespace ConsoleApp3
         {
             On = true;
             Off = false;
+            StartTime = DateTime.UtcNow;
             OnSwitchedOn(this, new EventArgs());
         }
 
@@ -121,6 +132,7 @@ namespace ConsoleApp3
         {
             On = false;
             Off = true;
+            StopTime = DateTime.UtcNow;
             OnSwitchedOff(this, new EventArgs());
         }
 
@@ -134,7 +146,7 @@ namespace ConsoleApp3
         /// <param name="time">время работы мотора</param>
         public void SetWorkTime(TimeSpan time) 
         {
-            WorkTime =+ (uint)time.TotalSeconds;
+            WorkTime += (uint)time.TotalSeconds;
         }
 
         #endregion
