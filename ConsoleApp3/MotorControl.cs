@@ -151,15 +151,15 @@ namespace ConsoleApp3
         private Motor GetMotorWithMaxWorkTime()
         {
             int maxIndex = 0;
-            int max = -1;
+            UInt32 max = motor[0].WorkTime;
 
             for (int i = 0; i < motor.Length; i++)
             {
                 if (motor[i].On) 
                 {
-                    if (motor[i].WorkTime > max)
+                    if (max > motor[i].WorkTime)
                     {
-                        max = (int)motor[i].WorkTime;
+                        max = motor[i].WorkTime;
                         maxIndex = i;
                     }
                 }
