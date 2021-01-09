@@ -19,15 +19,19 @@ namespace ConsoleApp3
             var exitButton = ConsoleKey.Escape;
             ConsoleKeyInfo cki;
 
+            Console.WriteLine("Тестирование алгоритма...\n");
+
             do
             {
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     test.IncreaseTemp(control);
                     test.LowerTemp(control);
                 }
 
-                Console.WriteLine("\nДля выхода нажмите клавишу Esc\n");
+                control.GetStatistics();
+
+                Console.WriteLine("\nДля выхода нажмите клавишу Esc.\n"+"Продолжить тестирование любую клавищу.\n");
                 cki = Console.ReadKey(true);
                 Console.WriteLine("\n");
 

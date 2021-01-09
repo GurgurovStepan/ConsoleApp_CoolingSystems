@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConsoleApp3
+﻿namespace ConsoleApp3
 {
+    /// <summary>
+    /// Тестирование 
+    /// </summary>
     class Test
     {
         #region Поля
@@ -18,7 +15,7 @@ namespace ConsoleApp3
         /// <summary>
         /// интенсивность (мс)
         /// </summary>
-        private int intensity = 100;
+        private int intensity = 200;
 
         /// <summary>
         /// максимальная температура для выполнения условия (true) цикла for метода "IncreaseTemp"
@@ -28,8 +25,7 @@ namespace ConsoleApp3
         /// <summary>
         /// максимальная температура для выполнения условия (true) цикла for метода "LowerTemp"
         /// </summary>
-        private sbyte lowMaxTemp = 50;
-
+        private sbyte lowMaxTemp = 40;
 
         #endregion
 

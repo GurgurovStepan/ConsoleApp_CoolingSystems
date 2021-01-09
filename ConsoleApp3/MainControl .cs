@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp3
 {
     /// <summary>
-    /// Управление моторами холодильной камерой
+    /// Управление моторами системы охлаждения
     /// </summary>
     class MainControl
     {
         #region Поля
 
         /// <summary>
-        /// холодилка
+        /// система охлаждения
         /// </summary>
         private Chiller chiller;
 
@@ -45,8 +41,24 @@ namespace ConsoleApp3
         public MainControl()
         {
             chiller = new Chiller();
-            motorControl = new MotorControl(chiller.NumberOfMotors);
             SetTempsOnOff();
+
+            Console.WriteLine("  Параметры системы охлаждения:\n" + 
+                              "- количество мотор-вентиляторов равно: {0}", chiller.NumberOfMotors);
+            Console.Write("- температурные уставки ОЖ на вкл.  МВ равно: ");
+            foreach (var item in tempsOn)
+            {
+                Console.Write(" {0} ", item);
+            }
+            Console.WriteLine("");
+            Console.Write("- температурные уставки ОЖ на откл. МВ равно: ");
+            foreach (var item in tempsOff)
+            {
+                Console.Write(" {0} ", item);
+            }
+            Console.WriteLine("\n");
+
+            motorControl = new MotorControl(chiller.NumberOfMotors);                      
         }
 
         #endregion
@@ -86,13 +98,17 @@ namespace ConsoleApp3
 
         }
 
+        public void GetStatistics() 
+        {
+            motorControl.DisplayStatistics();
+        }
+
         /// <summary>
         /// Получить температурные уставки от СО
         /// </summary>
         private void SetTempsOnOff() 
         {
-            int rank = chiller.tempsOnOff.Rank;
-            int rows = chiller.tempsOnOff.GetUpperBound(rank - 1);
+            int rows = chiller.tempsOnOff.GetUpperBound(0) + 1;
             int columns = chiller.tempsOnOff.Length / rows;
 
             tempsOn = new sbyte[columns];
@@ -102,8 +118,14 @@ namespace ConsoleApp3
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    if (i == 0) tempsOn[j] = chiller.tempsOnOff[i, j];
-                    if (i == 1) tempsOff[j] = chiller.tempsOnOff[i, j];
+                    if (i == 0)
+                    {
+                        tempsOn[j] = chiller.tempsOnOff[i, j];
+                    }
+                    if (i == 1)
+                    {
+                        tempsOff[j] = chiller.tempsOnOff[i, j];
+                    }
                 }
             }
         }

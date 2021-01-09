@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace ConsoleApp3
+﻿namespace ConsoleApp3
 {
     /// <summary>
-    /// Холодильная камера (ХК)
+    /// Система охлаждения (СО)
     /// </summary>
     class Chiller
     {
@@ -19,21 +17,9 @@ namespace ConsoleApp3
         #region Свойства
 
         /// <summary>
-        /// Число мотор-вентиляторов (МВ) необходимое для работы ХК
+        /// Число мотор-вентиляторов (МВ) необходимое для работы СО
         /// </summary>
         public sbyte NumberOfMotors { get; } = 3;
-
-        #endregion
-
-        #region Конструкторы 
-        public Chiller()
-        {
-
-        }
-
-        #endregion
-
-        #region Методы
 
         #endregion
     }

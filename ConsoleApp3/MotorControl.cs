@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 
 namespace ConsoleApp3
 {
@@ -61,7 +56,6 @@ namespace ConsoleApp3
                 motor[i].SwitchedOn += MotorControl_SwitchedOn;
                 motor[i].SwitchedOff += MotorControl_SwitchedOff;
             }
-
         }
 
         #endregion
@@ -166,6 +160,19 @@ namespace ConsoleApp3
             }
 
             return motor[maxIndex];
+        }
+
+        #endregion
+
+        #region Вывод статистики в консоль
+        public void DisplayStatistics() 
+        {
+            Console.WriteLine("\nСтатистика:");
+
+            for (int i = 0; i < motor.Length; i++)
+            {
+                Console.WriteLine("Мотор-вентилятор номер {0} наработал {1} секунд", motor[i].Number, motor[i].WorkTime);
+            }
         }
 
         #endregion
