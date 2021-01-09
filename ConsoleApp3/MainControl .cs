@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp3
 {
+    /// <summary>
+    /// Управление моторами холодильной камерой
+    /// </summary>
     class MainControl
     {
         #region Поля
