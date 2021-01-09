@@ -25,6 +25,16 @@ namespace ConsoleApp3
         /// </summary>
         private byte exceed = 0;
 
+        /// <summary>
+        /// температура включения МВ полученная от СО
+        /// </summary>
+        private sbyte[] tempsOn;
+
+        /// <summary>
+        /// температура отключения МВ полученная от СО
+        /// </summary>
+        private sbyte[] tempsOff;
+
         #endregion
 
         #region Конструкторы
@@ -33,6 +43,7 @@ namespace ConsoleApp3
         {
             chiller = new Chiller();
             motorControl = new MotorControl(chiller.NumberOfMotors);
+            SetTempsOnOff();
         }
 
         #endregion
@@ -45,11 +56,9 @@ namespace ConsoleApp3
         /// <param name="curTemp">температура ОЖ</param>
         public void SetCurrentTemp(sbyte curTemp)
         {
-            sbyte[] t0Level = new sbyte[] { 70, 80, 90 };
-
-            for (int i = exceed; i < t0Level.Length; i++)
+            for (int i = exceed; i < tempsOn.Length; i++)
             {
-                if (curTemp > t0Level[i])
+                if (curTemp > tempsOn[i])
                 {
                     Console.WriteLine("Температура включения МВ равна {0}", curTemp);
                     motorControl.TurnOnMotor();
@@ -57,15 +66,13 @@ namespace ConsoleApp3
                 }
             }
 
-            sbyte[] t1Level = new sbyte[] { 60, 70, 80 };
-
             if (exceed >= 0)
             {
                 var numbIter = exceed;
 
                 for (int i = 0; i < numbIter; i++)
                 {
-                    if (curTemp < t1Level[i])
+                    if (curTemp < tempsOff[i])
                     {
                         Console.WriteLine("Температура отключения МВ равна {0}", curTemp);
                         motorControl.TurnOffMotor();
@@ -74,6 +81,28 @@ namespace ConsoleApp3
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Получить температурные уставки от СО
+        /// </summary>
+        private void SetTempsOnOff() 
+        {
+            int rank = chiller.tempsOnOff.Rank;
+            int rows = chiller.tempsOnOff.GetUpperBound(rank - 1);
+            int columns = chiller.tempsOnOff.Length / rows;
+
+            tempsOn = new sbyte[columns];
+            tempsOff = new sbyte[columns];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (i == 0) tempsOn[j] = chiller.tempsOnOff[i, j];
+                    if (i == 1) tempsOff[j] = chiller.tempsOnOff[i, j];
+                }
+            }
         }
 
         #endregion

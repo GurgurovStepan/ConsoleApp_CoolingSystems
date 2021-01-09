@@ -12,15 +12,14 @@ namespace ConsoleApp3
         /// <summary>
         /// Значения температурных уставок охлаждающей жидкости (ОЖ) на вкл./откл. МВ
         /// </summary>
-        public readonly sbyte[,] tempsOnOff = new sbyte[,] { { 70, 80, 90 }, 
-                                                             { 60, 70, 80 } };
-
+        public readonly sbyte[,] tempsOnOff = new sbyte[,] { { 70, 80, 90 },   /* вкл. */
+                                                             { 60, 70, 80 } }; /* откл. */
         #endregion
 
         #region Свойства
 
         /// <summary>
-        /// Общее число мотор-вентиляторов (МВ) необходимое для работы ХК
+        /// Число мотор-вентиляторов (МВ) необходимое для работы ХК
         /// </summary>
         public sbyte NumberOfMotors { get; } = 3;
 
