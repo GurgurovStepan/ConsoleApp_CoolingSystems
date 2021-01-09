@@ -11,23 +11,28 @@ namespace ConsoleApp3
         #region Поля
 
         /// <summary>
-        /// управление холодилькой
+        /// холодилка
         /// </summary>
-        private ChillerControl chillerControl;
+        private Chiller chiller;
 
         /// <summary>
         /// управление мотором
         /// </summary>
-        private MotorControl motorControl;      
+        private MotorControl motorControl;
+
+        /// <summary>
+        /// число включенных моторов
+        /// </summary>
+        private byte exceed = 0;
 
         #endregion
 
         #region Конструкторы
 
-        public MainControl() 
-        {                              
-            chillerControl = new ChillerControl();              
-            motorControl = new MotorControl(chillerControl.NumberOfMotors);     
+        public MainControl()
+        {
+            chiller = new Chiller();
+            motorControl = new MotorControl(chiller.NumberOfMotors);
         }
 
         #endregion
@@ -37,14 +42,38 @@ namespace ConsoleApp3
         /// <summary>
         /// Установить температуру ОЖ
         /// </summary>
-        /// <param name="temp">температура ОЖ</param>
-        public void SetCurrentTemp(sbyte temp) 
+        /// <param name="curTemp">температура ОЖ</param>
+        public void SetCurrentTemp(sbyte curTemp)
         {
-            var numbMotorTurnOn = chillerControl.FindNumberMotorTurnOn(temp);
-            for (int i = 0; i < numbMotorTurnOn; i++)
+            sbyte[] t0Level = new sbyte[] { 70, 80, 90 };
+
+            for (int i = exceed; i < t0Level.Length; i++)
             {
-                motorControl.TurnOnMotor();
+                if (curTemp > t0Level[i])
+                {
+                    Console.WriteLine("Температура включения МВ равна {0}", curTemp);
+                    motorControl.TurnOnMotor();
+                    exceed++;
+                }
             }
+
+            sbyte[] t1Level = new sbyte[] { 60, 70, 80 };
+
+            if (exceed >= 0)
+            {
+                var numbIter = exceed;
+
+                for (int i = 0; i < numbIter; i++)
+                {
+                    if (curTemp < t1Level[i])
+                    {
+                        Console.WriteLine("Температура отключения МВ равна {0}", curTemp);
+                        motorControl.TurnOffMotor();
+                        exceed--;
+                    }
+                }
+            }
+
         }
 
         #endregion

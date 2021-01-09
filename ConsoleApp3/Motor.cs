@@ -133,6 +133,7 @@ namespace ConsoleApp3
             On = false;
             Off = true;
             StopTime = DateTime.UtcNow;
+            SetWorkTime(StopTime - StartTime);                  // подсчитать наработку за период вкл./откл.
             OnSwitchedOff(this, new EventArgs());
         }
 
@@ -144,7 +145,7 @@ namespace ConsoleApp3
         /// Подсчитать наработку
         /// </summary>
         /// <param name="time">время работы мотора</param>
-        public void SetWorkTime(TimeSpan time) 
+        private void SetWorkTime(TimeSpan time) 
         {
             WorkTime += (uint)time.TotalSeconds;
         }

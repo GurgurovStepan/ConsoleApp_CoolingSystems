@@ -30,7 +30,6 @@ namespace ConsoleApp3
         private void MotorControl_SwitchedOff(object sender, EventArgs e)
         {
             Motor mot = (Motor)sender;
-            mot.SetWorkTime(mot.StopTime - mot.StartTime); // подсчитать наработку за период вкл./откл.
             Console.WriteLine("Мотор {0} отключился, время отключения {1}. Наработка равна - {2}", mot.Number, mot.StopTime, mot.WorkTime);
         }
 
@@ -45,7 +44,7 @@ namespace ConsoleApp3
 
         #endregion
 
-        #region Конструкторы
+        #region Конструкторы  // связать this
 
         public MotorControl() { }
 
@@ -127,21 +126,22 @@ namespace ConsoleApp3
         /// <returns></returns>
         private Motor GetMotorWithMinWorkTime()
         {
-            int temp = 0;
+            int minIndex = 0;
+            uint min = uint.MaxValue;
 
-            for (int i = 0; i < motor.Length - 1; i++)
+            for (int i = 0; i < motor.Length; i++)
             {
-                if (motor[i].On)
+                if (motor[i].Off) 
                 {
-                    temp++;
-                }
-                else if (motor[i].WorkTime < motor[i + 1].WorkTime)
-                {
-                    temp = i;
+                    if (min > motor[i].WorkTime)
+                    {
+                        min = motor[i].WorkTime;
+                        minIndex = i;
+                    }
                 }
             }
 
-            return motor[temp];
+            return motor[minIndex];
         }
 
         /// <summary>
@@ -150,26 +150,22 @@ namespace ConsoleApp3
         /// <returns></returns>
         private Motor GetMotorWithMaxWorkTime()
         {
-            int index = 0;
-            uint max = uint.MinValue;
+            int maxIndex = 0;
+            int max = -1;
 
             for (int i = 0; i < motor.Length; i++)
             {
-                if (motor[i].On)
+                if (motor[i].On) 
                 {
                     if (motor[i].WorkTime > max)
                     {
-                        max = motor[i].WorkTime;
-                        index = i;
+                        max = (int)motor[i].WorkTime;
+                        maxIndex = i;
                     }
-                }
-                else
-                {
-                    if (i < motor.Length - 1) index++;
                 }
             }
 
-            return motor[index];
+            return motor[maxIndex];
         }
 
         #endregion
