@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp3
+﻿namespace CoolingSystem.OneCoolant
 {
     /// <summary>
     /// Тестирование 

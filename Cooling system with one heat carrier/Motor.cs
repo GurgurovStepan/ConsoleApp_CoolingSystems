@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleApp3
+namespace CoolingSystem.OneCoolant
 {
     /// <summary>
     /// Мотор-вентилятор(МВ)

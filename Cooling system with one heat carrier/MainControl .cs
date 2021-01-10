@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleApp3
+namespace CoolingSystem.OneCoolant
 {
     /// <summary>
     /// Управление мотор-вентиляторами(МВ) системы охлаждения(СО) (УМВСО)
