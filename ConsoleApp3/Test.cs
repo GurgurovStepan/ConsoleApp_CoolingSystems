@@ -13,7 +13,7 @@
         private sbyte iterator = 50;
 
         /// <summary>
-        /// интенсивность (мс)
+        /// интенсивность теста (мс)
         /// </summary>
         private int intensity = 200;
 
@@ -34,8 +34,8 @@
         /// <summary>
         /// Увеличить температуру
         /// </summary>
-        /// <param name="mC">объект класса "Управление моторами холодильной камерой"</param>
-        /// <param name="iter">начальная температура (температура начала отсчета), градусы Цельсия</param>
+        /// <param name="mC">объект класса "Управление мотор-вентиляторами системы охлаждения"</param>
+        /// <param name="iter">начальная температура (температура начала отсчета), гр. Цельсия</param>
         /// <param name="inten">интенсивность выполнения итераций, время остановки программы (мс)</param>
         public void IncreaseTemp(MainControl mC, ref sbyte iter, int inten)
         {
@@ -52,7 +52,7 @@
         /// <summary>
         /// Увеличить температуру
         /// </summary>
-        /// <param name="mC">объект класса "Управление моторами холодильной камерой"</param>
+        /// <param name="mC">объект класса "Управление мотор-вентиляторами системы охлаждения"</param>
         public void IncreaseTemp(MainControl mC)
         {
             for (; iterator < incMaxTemp; iterator++)
@@ -68,7 +68,7 @@
         /// <summary>
         /// Уменьшить температуру
         /// </summary>
-        /// <param name="mC">объект класса "Управление моторами холодильной камерой"</param>
+        /// <param name="mC">объект класса "Управление мотор-вентиляторами системы охлаждения"</param>
         /// <param name="iter">начальная температура (температура начала отсчета), градусы Цельсия</param>
         /// <param name="inten">интенсивность выполнения итераций, время остановки программы (мс)</param>
         public void LowerTemp(MainControl mC, ref sbyte iter, int inten)
@@ -86,7 +86,7 @@
         /// <summary>
         /// Уменьшить температуру
         /// </summary>
-        /// <param name="mC">объект класса "Управление моторами холодильной камерой"</param>
+        /// <param name="mC">объект класса "Управление мотор-вентиляторами системы охлаждения"</param>
         public void LowerTemp(MainControl mC)
         {
             for (; iterator > lowMaxTemp; iterator--)

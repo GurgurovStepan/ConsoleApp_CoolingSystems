@@ -3,7 +3,7 @@
 namespace ConsoleApp3
 {
     /// <summary>
-    /// Управление мотором
+    /// Управление мотор-вентиляторами (УМВ)
     /// </summary>
     class MotorControl
     {
@@ -11,21 +11,27 @@ namespace ConsoleApp3
         #region Обработчики событий
 
         /// <summary>
-        /// Мотор включился
+        /// МВ включился
         /// </summary>
         private void MotorControl_SwitchedOn(object sender, EventArgs e)
         {
-            Motor mot = (Motor)sender;
-            Console.WriteLine("Мотор {0} включился, время включения {1}. Наработка равна - {2}", mot.Number, mot.StartTime, mot.WorkTime);
+            if (sender is Motor mot)
+            {
+                Console.WriteLine("Мотор-вентилятор {0} включился, время включения {1}. Наработка равна - {2}",
+                    mot.Number, mot.StartTime, mot.WorkTime);
+            }
         }
 
         /// <summary>
-        /// Мотор отключился
+        /// МВ отключился
         /// </summary>
         private void MotorControl_SwitchedOff(object sender, EventArgs e)
         {
-            Motor mot = (Motor)sender;
-            Console.WriteLine("Мотор {0} отключился, время отключения {1}. Наработка равна - {2}", mot.Number, mot.StopTime, mot.WorkTime);
+            if (sender is Motor mot)
+            {
+                Console.WriteLine("Мотор-вентилятор {0} отключился, время отключения {1}. Наработка равна - {2}",
+                    mot.Number, mot.StopTime, mot.WorkTime);
+            }
         }
 
         #endregion
@@ -33,28 +39,36 @@ namespace ConsoleApp3
         #region Поля
 
         /// <summary>
-        /// Моторы
+        /// Группа МВ СО 
         /// </summary>
-        private Motor[] motor;
+        private readonly Motor[] motor;
 
         #endregion
 
-        #region Конструкторы  // связать this
-
-        public MotorControl() { }
+        #region Конструкторы
 
         /// <summary>
-        /// Создать моторы
+        /// Создать 1 МВ с №0
         /// </summary>
-        /// <param name="numb">число моторов</param>
-        public MotorControl(sbyte numb)
+        public MotorControl() : this(1)
         {
-            motor = new Motor[numb];
-            for (sbyte i = 0; i < motor.Length; i++)
+        }
+
+        /// <summary>
+        /// Создать группу МВ
+        /// </summary>
+        /// <param name="numb">число МВ (не ноль)</param>
+        public MotorControl(byte numb)
+        {
+            if (numb == 0) numb = 1; // создать хотя бы 1 МВ
+
+            motor = new Motor[numb]; // создать массив МВ
+
+            for (byte i = 0; i < motor.Length; i++)
             {
-                motor[i] = new Motor(i);
-                motor[i].SwitchedOn += MotorControl_SwitchedOn;
-                motor[i].SwitchedOff += MotorControl_SwitchedOff;
+                motor[i] = new Motor(i); // создать МВ
+                motor[i].SwitchedOn += MotorControl_SwitchedOn;   // подписаться на событие включения МВ
+                motor[i].SwitchedOff += MotorControl_SwitchedOff; // подписаться на событие отключения МВ
             }
         }
 
@@ -62,14 +76,14 @@ namespace ConsoleApp3
 
         #region Методы
 
-        #region Изменить состояние мотора
+        #region Изменить состояние МВ
 
         /// <summary>
-        /// Включить мотор с минимальной наработкой
+        /// Включить МВ с минимальной наработкой
         /// </summary>
         public void TurnOnMotor()
         {
-            var off = false; // наличие хотя бы одного отключенного мотора
+            var off = false; // наличие хотя бы одного отключенного МВ
 
             for (int i = 0; i < motor.Length; i++)
             {
@@ -83,16 +97,16 @@ namespace ConsoleApp3
             if (off)
             {
                 Motor temp = GetMotorWithMinWorkTime();
-                temp.TurnOn();
+                if (temp != null) temp.TurnOn();
             }
         }
 
         /// <summary>
-        /// Отключить мотор с максимальной наработкой
+        /// Отключить МВ с максимальной наработкой
         /// </summary>
         public void TurnOffMotor()
         {
-            var on = false; // наличие хотя бы одного включенного мотора
+            var on = false; // наличие хотя бы одного включенного МВ
 
             for (int i = 0; i < motor.Length; i++)
             {
@@ -106,18 +120,18 @@ namespace ConsoleApp3
             if (on)
             {
                 Motor temp = GetMotorWithMaxWorkTime();
-                temp.TurnOff();
+                if (temp != null) temp.TurnOff();
             }
         }
 
         #endregion
 
-        #region Определить мотор с максимальной и минимальной наработкой
+        #region Определить МВ с максимальной и минимальной наработкой
 
         /// <summary>
-        /// Определить мотор (отключенный) с минимальной наработкой 
+        /// Определить МВ (отключенный) с минимальной наработкой 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>МВ с мин. наработкой</returns>
         private Motor GetMotorWithMinWorkTime()
         {
             int minIndex = 0;
@@ -125,7 +139,7 @@ namespace ConsoleApp3
 
             for (int i = 0; i < motor.Length; i++)
             {
-                if (motor[i].Off) 
+                if (motor[i].Off)
                 {
                     if (min > motor[i].WorkTime)
                     {
@@ -139,9 +153,9 @@ namespace ConsoleApp3
         }
 
         /// <summary>
-        /// Определить мотор (включенный) с максимальной наработкой
+        /// Определить МВ (включенный) с максимальной наработкой
         /// </summary>
-        /// <returns></returns>
+        /// <returns>МВ с макс. наработкой</returns>
         private Motor GetMotorWithMaxWorkTime()
         {
             int maxIndex = 0;
@@ -149,7 +163,7 @@ namespace ConsoleApp3
 
             for (int i = 0; i < motor.Length; i++)
             {
-                if (motor[i].On) 
+                if (motor[i].On)
                 {
                     if (max > motor[i].WorkTime)
                     {
@@ -165,13 +179,24 @@ namespace ConsoleApp3
         #endregion
 
         #region Вывод статистики в консоль
-        public void DisplayStatistics() 
+        
+        /// <summary>
+        /// Вывод статистики
+        /// </summary>
+        public void DisplayStatistics()
         {
             Console.WriteLine("\nСтатистика:");
 
-            for (int i = 0; i < motor.Length; i++)
+            if (motor != null)
             {
-                Console.WriteLine("Мотор-вентилятор номер {0} наработал {1} секунд", motor[i].Number, motor[i].WorkTime);
+                for (int i = 0; i < motor.Length; i++)
+                {
+                    Console.WriteLine("Мотор-вентилятор номер {0} наработал {1} секунд", motor[i].Number, motor[i].WorkTime);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Мотор-вентиляторы не созданы");
             }
         }
 

@@ -3,12 +3,12 @@
 namespace ConsoleApp3
 {
     /// <summary>
-    /// Мотор
+    /// Мотор-вентилятор(МВ)
     /// </summary>
     class Motor
     {
         #region События
-  
+
         /// <summary>
         /// Включился
         /// </summary>
@@ -36,9 +36,10 @@ namespace ConsoleApp3
         #region Конструкторы
 
         /// <summary>
-        /// Конструктор
+        /// Создать МВ с указаным порядковым номером
         /// </summary>
-        public Motor(sbyte numb) 
+        /// <param name="numb">порядковый номер МВ</param>
+        public Motor(byte numb)
         {
             WorkTime = 0;
             On = false;
@@ -56,19 +57,9 @@ namespace ConsoleApp3
         private UInt32 workTime;
 
         /// <summary>
-        /// Состояние: включен - true
-        /// </summary>
-        private bool on;
-
-        /// <summary>
-        /// Состояние: отключен - true
-        /// </summary>
-        private bool off;
-
-        /// <summary>
         /// Номер
         /// </summary>
-        private sbyte number;
+        private byte number;
 
         #endregion
 
@@ -77,22 +68,22 @@ namespace ConsoleApp3
         /// <summary>
         /// Состояние включен
         /// </summary>
-        public bool On { get => on; private set => on = value; }
-        
+        public bool On { get; private set; }
+
         /// <summary>
         /// Состояние отключен
         /// </summary>
-        public bool Off { get => off; private set => off = value; }
+        public bool Off { get; private set; }
 
         /// <summary>
         /// Нарабока
         /// </summary>
         public uint WorkTime { get => workTime; private set => workTime = value; }
-        
+
         /// <summary>
         /// Номер
         /// </summary>
-        public sbyte Number { get => number; private set => number = value; }
+        public byte Number { get => number; private set => number = value; }
 
         /// <summary>
         /// Время включения
@@ -108,12 +99,12 @@ namespace ConsoleApp3
 
         #region Методы
 
-        #region Изменить состояние мотора
+        #region Изменить состояние МВ
 
         /// <summary>
-        /// Включить мотор
+        /// Включить МВ
         /// </summary>
-        public void TurnOn() 
+        public void TurnOn()
         {
             On = true;
             Off = false;
@@ -122,14 +113,14 @@ namespace ConsoleApp3
         }
 
         /// <summary>
-        /// Отключить мотор
+        /// Отключить МВ
         /// </summary>
-        public void TurnOff() 
+        public void TurnOff()
         {
             On = false;
             Off = true;
             StopTime = DateTime.UtcNow;
-            SetWorkTime(StopTime - StartTime);                  // подсчитать наработку за период вкл./откл.
+            if (StopTime>StartTime) SetWorkTime(StopTime - StartTime);  // подсчитать наработку за период вкл./откл.
             OnSwitchedOff(this, new EventArgs());
         }
 
@@ -140,8 +131,8 @@ namespace ConsoleApp3
         /// <summary>
         /// Подсчитать наработку
         /// </summary>
-        /// <param name="time">время работы мотора</param>
-        private void SetWorkTime(TimeSpan time) 
+        /// <param name="time">время работы МВ</param>
+        private void SetWorkTime(TimeSpan time)
         {
             WorkTime += (uint)time.TotalSeconds;
         }

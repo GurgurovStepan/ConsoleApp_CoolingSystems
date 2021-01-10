@@ -3,7 +3,7 @@
 namespace ConsoleApp3
 {
     /// <summary>
-    /// Управление моторами системы охлаждения
+    /// Управление мотор-вентиляторами(МВ) системы охлаждения(СО) (УМВСО)
     /// </summary>
     class MainControl
     {
@@ -15,12 +15,12 @@ namespace ConsoleApp3
         private Chiller chiller;
 
         /// <summary>
-        /// управление мотором
+        /// управление МВ
         /// </summary>
         private MotorControl motorControl;
 
         /// <summary>
-        /// число включенных моторов
+        /// число включенных МВ
         /// </summary>
         private byte exceed = 0;
 
@@ -38,27 +38,15 @@ namespace ConsoleApp3
 
         #region Конструкторы
 
+        /// <summary>
+        /// Создать систему управления МВ СО с установленными параметрами
+        /// </summary>
         public MainControl()
         {
             chiller = new Chiller();
-            SetTempsOnOff();
-
-            Console.WriteLine("  Параметры системы охлаждения:\n" + 
-                              "- количество мотор-вентиляторов равно: {0}", chiller.NumberOfMotors);
-            Console.Write("- температурные уставки ОЖ на вкл.  МВ равно: ");
-            foreach (var item in tempsOn)
-            {
-                Console.Write(" {0} ", item);
-            }
-            Console.WriteLine("");
-            Console.Write("- температурные уставки ОЖ на откл. МВ равно: ");
-            foreach (var item in tempsOff)
-            {
-                Console.Write(" {0} ", item);
-            }
-            Console.WriteLine("\n");
-
-            motorControl = new MotorControl(chiller.NumberOfMotors);                      
+            SetTempsOnOff(chiller);
+            DisplayDescriptions(chiller);
+            motorControl = new MotorControl(chiller.NumberOfMotors);
         }
 
         #endregion
@@ -98,35 +86,93 @@ namespace ConsoleApp3
 
         }
 
-        public void GetStatistics() 
+        /// <summary>
+        /// Вывести в консоль наработку по МВ
+        /// </summary>
+        public void GetStatistics()
         {
             motorControl.DisplayStatistics();
         }
 
         /// <summary>
-        /// Получить температурные уставки от СО
+        /// Получить температурные уставки от системы охлаждения
         /// </summary>
-        private void SetTempsOnOff() 
+        /// <param name="ch">система охлаждения</param>
+        private void SetTempsOnOff(Chiller ch)
         {
-            int rows = chiller.tempsOnOff.GetUpperBound(0) + 1;
-            int columns = chiller.tempsOnOff.Length / rows;
-
-            tempsOn = new sbyte[columns];
-            tempsOff = new sbyte[columns];
-
-            for (int i = 0; i < rows; i++)
+            if (ch != null) 
             {
-                for (int j = 0; j < columns; j++)
+                int rows = ch.tempsOnOff.GetUpperBound(0) + 1;
+                int columns = ch.tempsOnOff.Length / rows;
+
+                tempsOn = new sbyte[columns];
+                tempsOff = new sbyte[columns];
+
+                for (int i = 0; i < rows; i++)
                 {
-                    if (i == 0)
+                    for (int j = 0; j < columns; j++)
                     {
-                        tempsOn[j] = chiller.tempsOnOff[i, j];
-                    }
-                    if (i == 1)
-                    {
-                        tempsOff[j] = chiller.tempsOnOff[i, j];
+                        if (i == 0)
+                        {
+                            tempsOn[j] = ch.tempsOnOff[i, j];
+                        }
+                        if (i == 1)
+                        {
+                            tempsOff[j] = ch.tempsOnOff[i, j];
+                        }
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine("Система охлаждения не создана");
+            }
+        }
+
+        /// <summary>
+        /// Вывести в консоль параметры системы охлаждения
+        /// </summary>
+        /// <param name="ch">система охлаждения</param>
+        private void DisplayDescriptions(Chiller ch)
+        {
+            if (ch != null)
+            {
+                Console.WriteLine("  Параметры системы охлаждения:\n" +
+                                  "- количество мотор-вентиляторов равно: {0}", ch.NumberOfMotors);
+                Console.Write(    "- температурные уставки ОЖ на вкл.  МВ равно: ");
+
+                if (tempsOn != null) 
+                {
+                    foreach (var item in tempsOn)
+                    {
+                        Console.Write(" {0} ", item);
+                    }
+                    Console.WriteLine("");
+                }
+                else 
+                {
+                    Console.WriteLine("Температурные уставки ОЖ на вкл. МВ отсутствуют");
+                }
+
+                Console.Write("- температурные уставки ОЖ на откл. МВ равно: ");
+
+                if (tempsOff != null) 
+                {
+                    foreach (var item in tempsOff)
+                    {
+                        Console.Write(" {0} ", item);
+                    }
+                    Console.WriteLine("\n");
+                }
+                else
+                {
+                    Console.WriteLine("Температурные уставки ОЖ на откл. МВ отсутствуют");
+                }
+
+            }
+            else 
+            {
+                Console.WriteLine("Система охлаждения не создана");
             }
         }
 
