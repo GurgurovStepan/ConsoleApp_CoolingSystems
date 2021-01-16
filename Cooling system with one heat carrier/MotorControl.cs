@@ -159,13 +159,14 @@ namespace CoolingSystem.OneCoolant
         private Motor GetMotorWithMaxWorkTime()
         {
             int maxIndex = 0;
-            UInt32 max = motor[0].WorkTime;
+            UInt32 max = 0;
 
             for (int i = 0; i < motor.Length; i++)
             {
+                if (motor[i].WorkTime == 0) return motor[i];
                 if (motor[i].On)
                 {
-                    if (max > motor[i].WorkTime)
+                    if (motor[i].WorkTime > max)
                     {
                         max = motor[i].WorkTime;
                         maxIndex = i;
